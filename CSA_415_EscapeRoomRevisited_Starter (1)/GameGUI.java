@@ -229,18 +229,11 @@ public class GameGUI extends JComponent implements KeyListener
    * 
    * @return penaly for hitting a wall or trying to go off the grid, goodMove otherwise
    */
-  private void movePlayer(int incrx, int incry)
+    private void movePlayer(int incrx, int incry)
   {
-
     // check if off grid horizontally and vertically
-    if ( (currX+incrx < 0 || currX+incrx > WIDTH-SPACE_SIZE) || (currY+incry < 0 || currY+incry > HEIGHT-SPACE_SIZE) )
-    {
-      //showMessage("You have tried to go off the grid!");
-    }
-
-    // all is well, move player
-    currX += incrx;
-    currY += incry;
+    if(!((currX+incrx < 0 || currX+incrx > WIDTH-SPACE_SIZE)))currX += incrx;
+    if(!((currY+incry < 0 || currY+incry > HEIGHT-SPACE_SIZE)))currY += incry;
     repaint();
   }
 
