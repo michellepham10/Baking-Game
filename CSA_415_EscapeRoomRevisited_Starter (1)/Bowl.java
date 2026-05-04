@@ -6,11 +6,11 @@ public class Bowl{
   
   public Bowl(){
     //add recipes here. Format: name is first, then ingredients.
-    recipes = new String[][]{{"Vanilla cake batter","butter,eggs","flour","milk","sugar"},
-              {"Chocolate cake batter","butter","eggs","flour","milk","sugar","cocoa"},
-              {"Vanilla icing","butter","milk","sugar"},
-              {"Chocolate icing","butter","cocoa","milk","sugar"},
-              {"Flour batter","flour"}};//joke item for testing
+    recipes = new String[][]{{"Vanilla cake batter","butter","eggs","flour","milk","sugar"},
+              {"Strawberry cake batter","butter","eggs","flour","milk","strawberries","sugar"},
+              {"Chocolate cake batter","butter","chocolate","eggs","flour","milk","sugar"}};
+              //{"Vanilla icing","butter","milk","sugar"},
+              //{"Chocolate icing","butter","cocoa","milk","sugar"},
     ingredients = new ArrayList<String>();
   }
   
@@ -36,13 +36,12 @@ public class Bowl{
   
   //checks if ingredients match a recipe, and if so turns them into the product.
   public void mix(){
+    System.out.println(ingredients);
     String temp = findRecipe();
+    System.out.println(temp);
     if(temp!=null){
-      String[] temp1 = temp.split("",1);
-      if(temp1[0]!=null){
-        clearBowl();
-        ingredients.addAll(Arrays.asList(temp));
-      }
+      clearBowl();
+      ingredients.addAll(Arrays.asList(temp));
     }
   }
   
