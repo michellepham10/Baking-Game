@@ -2,8 +2,8 @@ public class Customers{
   //options can be edited however you want.
   private final String[] greetings = {"Good morning, ","...","Hi, ","Heyyy, ","Sup, ","Hello, ",""};
   private final String[] requests = {"I'd like ","could I get ","give me ","... umm, ",""};
-  private final String[] cakes = {"vanilla ","chocolate "};
-  private final String[] frostings = {"vanilla ","chocolate "};
+  private final String[] cakes = {"vanilla ","strawberry ","chocolate "};
+  //private final String[] frostings = {"vanilla ","chocolate "};
   private final String[] endings = {" please",".."," maybe",", thanks"," or whatever",""};
   private final String[] repliesP1 = {"Thank you so much!", "Thank you!", "Thanks.", ""};
   private final String[] repliesP2 = {"Goodbye!", "Bye!", "Bye.", "See you next time!", ""};
@@ -15,8 +15,8 @@ public class Customers{
   
   public String generateOrder()
   {
-    order=cakes[(int)(Math.random()*cakes.length)]+"cake with "+
-    frostings[(int)(Math.random()*frostings.length)]+"frosting";
+    order=cakes[(int)(Math.random()*cakes.length)]+"cake";//+" with "
+    //frostings[(int)(Math.random()*frostings.length)]+"frosting";
     
     words=greetings[(int)(Math.random()*greetings.length)]+
     requests[(int)(Math.random()*requests.length)]+"a "+order+
@@ -26,7 +26,9 @@ public class Customers{
 
     return words;
   }
-
+  public String getCake(){
+    return order;
+  }
   public String generateReply()
   {
     reply=repliesP1[(int)(Math.random()*repliesP1.length)]+" "+
