@@ -10,7 +10,10 @@ public class Bowl{
               {"Strawberry cake batter","butter","eggs","flour","milk","strawberries","sugar"},
               {"Chocolate cake batter","butter","chocolate","eggs","flour","milk","sugar"}};
               //{"Vanilla icing","butter","milk","sugar"},
-              //{"Chocolate icing","butter","cocoa","milk","sugar"},
+              //{"Chocolate icing","butter","chocolate","milk","sugar"},
+              //{"Regular muffin batter","butter","eggs","flour","milk","sour cream","sugar"},
+              //{"Chocolate muffin batter","butter","chocolate","eggs","flour","milk","sour cream","sugar"},
+              //{"Cookie dough","butter","chocolate","eggs","flour","sugar"},
     ingredients = new ArrayList<String>();
   }
   
