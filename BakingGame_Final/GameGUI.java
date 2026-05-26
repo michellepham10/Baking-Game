@@ -54,6 +54,9 @@ public class GameGUI extends JComponent implements KeyListener
   private BufferedImage vanillaCakeImage;
   private BufferedImage chocolateCakeImage;
   private BufferedImage strawberryCakeImage;
+  private BufferedImage cupcakeImage;
+  private BufferedImage cookieImage;
+  private BufferedImage closedFridgeImage;
   
   private int currX = 15; 
   private int currY = 15;
@@ -86,9 +89,10 @@ public class GameGUI extends JComponent implements KeyListener
   private Bowl bowlObj;
   private ArrayList<String> inventory;
   private ArrayList<BufferedImage> invImages;
-  //private ArrayList<BufferedImage> kitchenImages;
-  //private ArrayList<BufferedImage> custImages;
-  //private ArrayList<Rectangle> kitchenRects;
+  private ArrayList<BufferedImage> kitchenImages;
+  private ArrayList<BufferedImage> custImages;
+  private ArrayList<Rectangle> kitchenRects;
+  private ArrayList<BufferedImage> productImages;
   public Customers c;
 
   public GameGUI() throws IOException,InterruptedException
@@ -123,8 +127,9 @@ public class GameGUI extends JComponent implements KeyListener
       /* your code here */ 
       endGame();
     }
-    if(e.getKeyCode()==KeyEvent.VK_C){
+    if(e.getKeyCode()==KeyEvent.VK_L){
       inventory=new ArrayList<String>();
+      invImages = new ArrayList<BufferedImage>();
     }
     // H key: help
     if (e.getKeyCode() == KeyEvent.VK_H)
@@ -179,6 +184,7 @@ public class GameGUI extends JComponent implements KeyListener
         bowlObj.mix();
         if(bowlObj.getIngredients().get(0).contains("batter")){
           inventory.add(bowlObj.getIngredients().get(0));
+          invImages.add(doughImage);
         }
         bowlObj.clearBowl();
       }
@@ -253,9 +259,10 @@ public class GameGUI extends JComponent implements KeyListener
   private void createBoard() throws IOException
   {
     invImages = new ArrayList<BufferedImage>();
-    //kitchenImages = new ArrayList<BufferedImage>();
-    //custImages = new ArrayList<BufferedImage>();
-    //kitchenRects = new ArrayList<Rectangle>();
+    kitchenImages = new ArrayList<BufferedImage>();
+    custImages = new ArrayList<BufferedImage>();
+    kitchenRects = new ArrayList<Rectangle>();
+    productImages = new ArrayList<BufferedImage>();
     npcX = WIDTH+20;
     npcY=0;
     kitchenScreen = true;
@@ -265,49 +272,56 @@ public class GameGUI extends JComponent implements KeyListener
     isRedFairy = false;
     bowlObj = new Bowl();
     c = new Customers();
-
+    
     
     kitchenBG = ImageIO.read(new File("kitchen.png"));
     cashier = ImageIO.read(new File("cashier.png"));
     
-    flourImage = ImageIO.read(new File("flour.png"));
-    bowlImage = ImageIO.read(new File("bowl.png"));
-    strawberriesImage = ImageIO.read(new File("strawberries.png"));
-    butterImage = ImageIO.read(new File("butter.png"));
-    eggsImage = ImageIO.read(new File("eggs.png"));
-    milkImage = ImageIO.read(new File("milk.png"));
-    sugarImage = ImageIO.read(new File("sugar.png"));
-    chocolateImage = ImageIO.read(new File("chocolate.png"));
-    panImage = ImageIO.read(new File("pan.png"));
+
+    kitchenImages.add(flourImage = ImageIO.read(new File("flour.png")));
+    kitchenImages.add(bowlImage = ImageIO.read(new File("bowl.png")));
+    kitchenImages.add(strawberriesImage = ImageIO.read(new File("strawberries.png")));
+    kitchenImages.add(butterImage = ImageIO.read(new File("butter.png")));
+    kitchenImages.add(eggsImage = ImageIO.read(new File("eggs.png")));
+    kitchenImages.add(milkImage = ImageIO.read(new File("milk.png")));
+    kitchenImages.add(sugarImage = ImageIO.read(new File("sugar.png")));
+    kitchenImages.add(chocolateImage = ImageIO.read(new File("chocolate.png")));
+    kitchenImages.add(panImage = ImageIO.read(new File("pan.png")));
     openOvenImage = ImageIO.read(new File("openOven.png"));
     openFridgeImage =ImageIO.read(new File("openFridge.png"));
+    closedFridgeImage=ImageIO.read(new File("closedFridge.png"));
     inv5 = ImageIO.read(new File("5inventory.png"));
     inv6 = ImageIO.read(new File("6inventory.png"));
-    greenFairyImage = ImageIO.read(new File("greenfairy.png"));
-    redFairyImage = ImageIO.read(new File("redfairy.png"));
+    custImages.add(greenFairyImage = ImageIO.read(new File("greenfairy.png")));
+    custImages.add(redFairyImage = ImageIO.read(new File("redfairy.png")));
     doughImage = ImageIO.read(new File("dough.png"));
     vanillaCakeImage = ImageIO.read(new File("vanillacake.png"));
     chocolateCakeImage = ImageIO.read(new File("chocolatecake.png"));
     strawberryCakeImage = ImageIO.read(new File("straberrycake.png"));
     filledPanImage = ImageIO.read(new File("filledPan.png"));
     player = ImageIO.read(new File("player.png"));
+    cupcakeImage = ImageIO.read(new File("cupcake.png"));
+    cookieImage = ImageIO.read(new File("cookie.png"));
 
-    flour = new Rectangle(40,433, (int)flourImage.getWidth(), (int)flourImage.getHeight());
-    bowl = new Rectangle(293,493,(int)bowlImage.getWidth(),(int)bowlImage.getHeight());
-    strawberries = new Rectangle(901,271,(int)strawberriesImage.getWidth(),(int)strawberriesImage.getHeight());
-    butter = new Rectangle(975,327,(int)butterImage.getWidth(),(int)butterImage.getHeight());
-    eggs = new Rectangle(915,180,(int)eggsImage.getWidth(),(int)eggsImage.getHeight());
-    milk = new Rectangle(898,398,(int)milkImage.getWidth(),(int)milkImage.getHeight());
-    sugar = new Rectangle(983,413,(int)sugarImage.getWidth(),(int)sugarImage.getHeight());
-    chocolate = new Rectangle(895,505,(int)chocolateImage.getWidth(),(int)chocolateImage.getHeight());
-    pan = new Rectangle(623,527,(int)panImage.getWidth(),(int)panImage.getHeight());
-    openOven = new Rectangle(570,640,(int)openOvenImage.getWidth(),(int)openOvenImage.getHeight());
-    openFridge = new Rectangle(840,50,(int)openFridgeImage.getWidth(),(int)openFridgeImage.getHeight());
+    productImages.add(vanillaCakeImage);
+    productImages.add(strawberryCakeImage);
+    productImages.add(chocolateCakeImage);
+    productImages.add(cupcakeImage);
+    productImages.add(cookieImage);
 
-      
+    kitchenRects.add(flour = new Rectangle(40,433, (int)flourImage.getWidth(), (int)flourImage.getHeight()));
+    kitchenRects.add(bowl = new Rectangle(293,493,(int)bowlImage.getWidth(),(int)bowlImage.getHeight()));
+    kitchenRects.add(strawberries = new Rectangle(901,271,(int)strawberriesImage.getWidth(),(int)strawberriesImage.getHeight()));
+    kitchenRects.add(butter = new Rectangle(975,327,(int)butterImage.getWidth(),(int)butterImage.getHeight()));
+    kitchenRects.add(eggs = new Rectangle(915,180,(int)eggsImage.getWidth(),(int)eggsImage.getHeight()));
+    kitchenRects.add(milk = new Rectangle(898,398,(int)milkImage.getWidth(),(int)milkImage.getHeight()));
+    kitchenRects.add(sugar = new Rectangle(983,413,(int)sugarImage.getWidth(),(int)sugarImage.getHeight()));
+    kitchenRects.add(chocolate = new Rectangle(895,505,(int)chocolateImage.getWidth(),(int)chocolateImage.getHeight()));
+    kitchenRects.add(pan = new Rectangle(595,495,(int)filledPanImage.getWidth(),(int)filledPanImage.getHeight()));
+    kitchenRects.add(openOven = new Rectangle(570,620,250,250));
+    kitchenRects.add(openFridge = new Rectangle(820,50,(int)closedFridgeImage.getWidth(),(int)closedFridgeImage.getHeight()-100));      
     // save player location
     playerLoc = new Point(currX, currY);
-
     // create the game frame
     frame = new JFrame();
     frame.setTitle("Baking Game");
@@ -361,8 +375,8 @@ private void pickupIngredient()
       if (flour.contains(playerLoc)&&!inventory.contains("flour"))
         {
           invImages.add(flourImage);
-          //kitchenImages.remove(flourImage);
-          //kitchenRects.remove(flour);
+          kitchenImages.remove(flourImage);
+          kitchenRects.remove(flour);
           inventory.add("flour");
           repaint();
         }
@@ -370,8 +384,8 @@ private void pickupIngredient()
       else if (strawberries.contains(playerLoc)&&!inventory.contains("strawberries"))
         {
           invImages.add(strawberriesImage);
-          //kitchenImages.remove(strawberriesImage);
-          //kitchenRects.remove(strawberries);
+          kitchenImages.remove(strawberriesImage);
+          kitchenRects.remove(strawberries);
           inventory.add("strawberries");
           repaint();
           
@@ -380,8 +394,8 @@ private void pickupIngredient()
       else if (butter.contains(playerLoc)&&!inventory.contains("butter"))
         {
           invImages.add(butterImage);
-          //kitchenImages.remove(butterImage);
-          //kitchenRects.remove(butter);
+          kitchenImages.remove(butterImage);
+          kitchenRects.remove(butter);
           inventory.add("butter");
           repaint();
         }
@@ -389,49 +403,49 @@ private void pickupIngredient()
       else if (eggs.contains(playerLoc)&&!inventory.contains("eggs"))
         {
           invImages.add(eggsImage);
-          //kitchenImages.remove(eggsImage);
-          //kitchenRects.remove(eggs);
+          kitchenImages.remove(eggsImage);
+          kitchenRects.remove(eggs);
           inventory.add("eggs");
           repaint();
         }
       else if (milk.contains(playerLoc)&&!inventory.contains("milk"))
         {
           invImages.add(milkImage);
-          //kitchenImages.remove(milkImage);
-          //kitchenRects.remove(milk);
+          kitchenImages.remove(milkImage);
+          kitchenRects.remove(milk);
           inventory.add("milk");
           repaint();
         }
       else if (chocolate.contains(playerLoc)&&!inventory.contains("chocolate"))
         {
           invImages.add(chocolateImage);
-          //kitchenImages.remove(chocolateImage);
-          //kitchenRects.remove(chocolate);
+          kitchenImages.remove(chocolateImage);
+          kitchenRects.remove(chocolate);
           inventory.add("chocolate");
           repaint();
         }
       else if (sugar.contains(playerLoc)&&!inventory.contains("sugar"))
         {
           invImages.add(sugarImage);
-          //kitchenImages.remove(sugarImage);
-          //kitchenRects.remove(sugar);
+          kitchenImages.remove(sugarImage);
+          kitchenRects.remove(sugar);
           inventory.add("sugar");
           repaint();
         }
-      else if (pan.contains(playerLoc)&&!inventory.contains("pan"))
+      else if(pan.contains(playerLoc)&&!inventory.contains("pan"))
         {
           if(!panFiller.equals("")){
-            invImages.add(panImage);
-            //kitchenImages.remove(panImage);
-            //kitchenRects.remove(pan);
+            invImages.add(filledPanImage);
+            kitchenImages.remove(filledPanImage);
+            kitchenRects.remove(pan);
             inventory.add("pan");
           }else {
             for(int i = 0;i<inventory.size();i++){
               if(inventory.get(i).contains("batter")){
                 panFiller=inventory.get(i);
-                System.out.println("panfiller: "+panFiller);
                 inventory.remove(i);
-                //invImages.remove(i);
+                invImages.remove(i);
+                kitchenImages.set(kitchenImages.indexOf(panImage),filledPanImage);
                 break;
               }
             }
@@ -441,18 +455,20 @@ private void pickupIngredient()
         }
       else if(openOven.contains(playerLoc)&&inventory.contains("pan")){
         inventory.add(panFiller.substring(0,panFiller.indexOf(" batter")).toLowerCase());
+        invImages.add(productImages.get(bowlObj.findRecipeIdx(panFiller)));
         panFiller="";
         inventory.remove("pan");
-        //invImages.remove(panImage);
-        //kitchenImages.add(panImage);
-        //kitchenRects.add(pan);
+        invImages.remove(filledPanImage);
+        kitchenImages.add(panImage);
+        kitchenRects.add(kitchenImages.indexOf(panImage),pan);
+        //System.out.println(kitchenImages.indexOf(panImage)==kitchenRects.indexOf(pan));
       }
-      if (bowl.contains(playerLoc)){
+      else if (bowl.contains(playerLoc)){
         for(int i = 0;i<inventory.size();i++){
           if(!inventory.get(i).contains("batter")&&!inventory.get(i).contains("tray")){
             bowlObj.addIngredient(inventory.get(i));
             inventory.remove(i);
-            //invImages.remove(i);
+            invImages.remove(i);
             i--;
           }
         }
@@ -461,7 +477,7 @@ private void pickupIngredient()
       }
     }else{
       if(inventory.contains(c.getCake())){
-        //invImages.remove(inventory.indexOf(c.getCake()));
+        invImages.remove(inventory.indexOf(c.getCake()));
         inventory.remove(c.getCake());
         showMessage(c.generateReply());
         c.nullifyOrder();
@@ -489,65 +505,26 @@ private void pickupIngredient()
   {
     super.paintComponent(g);
     Graphics2D g2 = (Graphics2D)g;
-    /*if(kitchenScreen){
+    if(kitchenScreen){
       g.drawImage(kitchenBG, 0, 0, null);
       if(isInv5)g.drawImage(inv5, 580, 0, null);
       else g.drawImage(inv6, 415, 0, null);
       if(openOven.contains(playerLoc))g.drawImage(openOvenImage, 0, 0, null);
-      if(openFridge.contains(playerLoc))g.drawImage(openFridgeImage, 0, 0, null);
-    }
-    for(int i = 0;i< kitchenImages.size();i++){
-      g.drawImage(kitchenImages.get(i),(int)kitchenRects.get(i).getX()+37,(int)kitchenRects.get(i).getY()+37,null);
-    }*/
-    if(kitchenScreen){
-
-      g.drawImage(kitchenBG, 0, 0, null);
-      //if(isInv5)g.drawImage(inv5, 580, 0, null);
-      g.drawImage(inv6, 415, 0, null);
-      g.drawImage(bowlImage,(int)bowl.getX()+37,(int)bowl.getY()+37,null);
-      if(openOven.contains(playerLoc))g.drawImage(openOvenImage, 0, 0, null);
-      if(openFridge.contains(playerLoc))g.drawImage(openFridgeImage, 0, 0, null);
-      if (!inventory.contains("strawberries")&&openFridge.contains(playerLoc)){
-        if(!bowlObj.getIngredients().contains("strawberries"))g.drawImage(strawberriesImage, (int)strawberries.getX()+37, (int)strawberries.getY()+37, null);
+      if(openFridge.contains(playerLoc)){
+        g.drawImage(openFridgeImage, 0, 0, null);
       }
-      else g.drawImage(strawberriesImage, WIDTH-160*(inventory.indexOf("strawberries")+1)+30, 40, null);
-      if (!inventory.contains("butter")&&openFridge.contains(playerLoc)){
-        if(!bowlObj.getIngredients().contains("butter"))g.drawImage(butterImage, (int)butter.getX()+37, (int)butter.getY()+37, null);
+      for(int i = 0;i< kitchenImages.size();i++){
+        g.drawImage(kitchenImages.get(i),(int)kitchenRects.get(i).getX()+37,(int)kitchenRects.get(i).getY()+37,null);
       }
-      else g.drawImage(butterImage, WIDTH-160*(inventory.indexOf("butter")+1)+33, 67, null);
-      if (!inventory.contains("eggs")&&openFridge.contains(playerLoc)){
-        if(!bowlObj.getIngredients().contains("eggs"))g.drawImage(eggsImage, (int)eggs.getX()+37, (int)eggs.getY()+37, null);
+      if(!openFridge.contains(playerLoc)){
+        g.drawImage(closedFridgeImage, 839, 147, null);
       }
-      else g.drawImage(eggsImage, WIDTH-160*(inventory.indexOf("eggs")+1)+6, 60, null);
-      if (!inventory.contains("milk")&&openFridge.contains(playerLoc)){
-        if(!bowlObj.getIngredients().contains("milk"))g.drawImage(milkImage, (int)milk.getX()+37, (int)milk.getY()+37, null);
+      for(int i = 0;i<invImages.size();i++){
+        try{g.drawImage(invImages.get(i),WIDTH-160*(i+1)+65-invImages.get(i).getWidth()/2, 70-invImages.get(i).getHeight()/2,null);}
+        catch(Exception e){}
       }
-      else g.drawImage(milkImage, WIDTH-160*(inventory.indexOf("milk")+1)+40, 40, null);
-      if (!inventory.contains("chocolate")&&openFridge.contains(playerLoc)){
-        if(!bowlObj.getIngredients().contains("chocolate"))g.drawImage(chocolateImage, (int)chocolate.getX()+37, (int)chocolate.getY()+37, null);
-      }
-      else g.drawImage(chocolateImage, WIDTH-160*(inventory.indexOf("chocolate")+1)+30, 40, null);
-      if (!inventory.contains("sugar")&&openFridge.contains(playerLoc)){
-        if(!bowlObj.getIngredients().contains("sugar"))g.drawImage(sugarImage, (int)sugar.getX()+37, (int)sugar.getY()+37, null);
-      }
-      else g.drawImage(sugarImage, WIDTH-160*(inventory.indexOf("sugar")+1)+30, 45, null);
-      if (!inventory.contains("flour")){
-        if(!bowlObj.getIngredients().contains("flour"))g.drawImage(flourImage, (int)flour.getX()+37, (int)flour.getY()+37, null);
-      }
-      else g.drawImage(flourImage, WIDTH-160*(inventory.indexOf("flour")+1)+10, 0, null);
-      for(int i = 0;i<inventory.size();i++){
-        if(inventory.get(i).contains("batter"))g.drawImage(doughImage, WIDTH-160*(i+1), 40, null);
-      }
-      if(inventory.contains("vanilla cake"))g.drawImage(vanillaCakeImage, WIDTH-160*(inventory.indexOf("vanilla cake")+1)-15, 20, null);
-      if(inventory.contains("chocolate cake"))g.drawImage(chocolateCakeImage, WIDTH-160*(inventory.indexOf("chocolate cake")+1)-5, 10, null);
-      if(inventory.contains("strawberry cake"))g.drawImage(strawberryCakeImage, WIDTH-160*(inventory.indexOf("strawberry cake")+1)-17, 18, null);
-      if (panFiller.equals("")&&!inventory.contains("pan"))g.drawImage(panImage, (int)pan.getX()+20, (int)pan.getY()+20, null);
-      else if(!inventory.contains("pan"))g.drawImage(filledPanImage, (int)pan.getX()+20, (int)pan.getY()-1, null);
-      else g.drawImage(filledPanImage, WIDTH-160*(inventory.indexOf("pan")+1), 40, null);
     }else{
       g.drawImage(cashier,0,0,null);
-      if(isInv5)g.drawImage(inv5, 580, 0, null);
-      else g.drawImage(inv6, 415, 0, null);
       if(!custAtPos){
         npcY+=0.015;
         npcX--;
@@ -561,6 +538,7 @@ private void pickupIngredient()
       if(isRedFairy)g.drawImage(redFairyImage, npcX, 370+(int)(25*Math.sin(npcY)), null);
       else g.drawImage(greenFairyImage, npcX, 370+(int)(25*Math.sin(npcY)), null);
     }
+    
     g.drawImage(player, currX, currY, 70,70, null);
     playerLoc.setLocation(currX, currY);
   }
