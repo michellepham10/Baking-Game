@@ -8,12 +8,12 @@ public class Bowl{
     //add recipes here. Format: name is first, then ingredients.
     recipes = new String[][]{{"Vanilla cake batter","butter","eggs","flour","milk","sugar"},
               {"Strawberry cake batter","butter","eggs","flour","milk","strawberries","sugar"},
-              {"Chocolate cake batter","butter","chocolate","eggs","flour","milk","sugar"}};
+              {"Chocolate cake batter","butter","chocolate","eggs","flour","milk","sugar"},
+              {"Chocolate cupcake batter","butter","chocolate","eggs","flour","milk","sour cream","sugar"},
+              {"Cookie batter","butter","chocolate","eggs","flour","sugar"}};
               //{"Vanilla icing","butter","milk","sugar"},
               //{"Chocolate icing","butter","chocolate","milk","sugar"},
-              //{"Regular muffin batter","butter","eggs","flour","milk","sour cream","sugar"},
-              //{"Chocolate muffin batter","butter","chocolate","eggs","flour","milk","sour cream","sugar"},
-              //{"Cookie dough","butter","chocolate","eggs","flour","sugar"},
+              
     ingredients = new ArrayList<String>();
   }
   
@@ -78,5 +78,11 @@ public class Bowl{
       }
     }
     return null;
+  }
+  public int findRecipeIdx(String str){
+    for(int row = 0;row<recipes.length;row++){
+      if(recipes[row][0].equals(str))return row;
+    }
+    return -1;
   }
 }
