@@ -6,13 +6,13 @@ public class Bowl{
   
   public Bowl(){
     //add recipes here. Format: name is first, then ingredients.
-    recipes = new String[][]{{"Vanilla cake batter","butter","eggs","flour","milk","sugar"},
-              {"Strawberry cake batter","butter","eggs","flour","milk","strawberries","sugar"},
-              {"Chocolate cake batter","butter","chocolate","eggs","flour","milk","sugar"},
-              {"Chocolate cupcake batter","butter","chocolate","eggs","flour","milk","sour cream","sugar"},
-              {"Cookie batter","butter","chocolate","eggs","flour","sugar"}};
-              //{"Vanilla icing","butter","milk","sugar"},
-              //{"Chocolate icing","butter","chocolate","milk","sugar"},
+    recipes = new String[][]{{"vanilla cake batter","butter","eggs","flour","milk","sugar"},
+              {"strawberry cake batter","butter","eggs","flour","milk","strawberries","sugar"},
+              {"chocolate cake batter","butter","chocolate","eggs","flour","milk","sugar"},
+              {"chocolate cupcake batter","butter","chocolate","eggs","flour","milk","sour cream","sugar"},
+              {"cookie batter","butter","chocolate","eggs","flour","sugar"}};
+              //{"vanilla icing","butter","milk","sugar"},
+              //{"chocolate icing","butter","chocolate","milk","sugar"},
               
     ingredients = new ArrayList<String>();
   }
