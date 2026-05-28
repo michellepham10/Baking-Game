@@ -2,7 +2,7 @@ public class Customers{
   //options can be edited however you want.
   private final String[] greetings = {"Good morning, ","...","Hi, ","Heyyy, ","Sup, ","Hello, ",""};
   private final String[] requests = {"I'd like ","could I get ","give me ","... umm, ",""};
-  private final String[] cakes = {"vanilla ","strawberry ","chocolate "};
+  private final String[] products = {"vanilla cake","strawberry cake","chocolate cake","chocolate cupcake","cookie"};
   //private final String[] frostings = {"vanilla ","chocolate "};
   private final String[] endings = {" please",".."," maybe",", thanks"," or whatever",""};
   private final String[] repliesP1 = {"Thank you so much!", "Thank you!", "Thanks.", ""};
@@ -15,7 +15,7 @@ public class Customers{
   
   public String generateOrder()
   {
-    order=cakes[(int)(Math.random()*cakes.length)]+"cake";//+" with "
+    order=products[(int)(Math.random()*products.length)];//+" with "
     //frostings[(int)(Math.random()*frostings.length)]+"frosting";
     
     words=greetings[(int)(Math.random()*greetings.length)]+
@@ -26,7 +26,7 @@ public class Customers{
 
     return words;
   }
-  public String getCake(){
+  public String getProduct(){
     return order;
   }
   public String generateReply()
@@ -39,6 +39,7 @@ public class Customers{
 
   public void nullifyOrder()
   {
+    order="";
     words = "";
   }
 
