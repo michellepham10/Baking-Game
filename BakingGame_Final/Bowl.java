@@ -9,7 +9,7 @@ public class Bowl{
     recipes = new String[][]{{"vanilla cake batter","butter","eggs","flour","milk","sugar"},
               {"strawberry cake batter","butter","eggs","flour","milk","strawberries","sugar"},
               {"chocolate cake batter","butter","chocolate","eggs","flour","milk","sugar"},
-              {"chocolate cupcake batter","butter","chocolate","eggs","flour","milk","sour cream","sugar"},
+              {"chocolate cupcake batter","butter","chocolate","eggs","flour","milk","sourcream","sugar"},
               {"cookie batter","butter","chocolate","eggs","flour","sugar"}};
               //{"vanilla icing","butter","milk","sugar"},
               //{"chocolate icing","butter","chocolate","milk","sugar"},
@@ -39,9 +39,8 @@ public class Bowl{
   
   //checks if ingredients match a recipe, and if so turns them into the product.
   public void mix(){
-    System.out.println(ingredients);
     String temp = findRecipe();
-    System.out.println(temp);
+    System.out.println(ingredients+","+temp);
     if(temp!=null){
       clearBowl();
       ingredients.addAll(Arrays.asList(temp));
@@ -69,6 +68,7 @@ public class Bowl{
   private String findRecipe(){
     for(int i = 0;i<recipes.length;i++){
       for(int j = 0;j<ingredients.size()&&j<recipes[i].length-1;j++){
+        if(ingredients.size()!=recipes[i].length-1)break;
         if(!ingredients.get(j).equals(recipes[i][j+1])){
           break;
         }
