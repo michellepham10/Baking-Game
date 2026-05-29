@@ -53,8 +53,9 @@ public class GameGUI extends JComponent implements KeyListener
   private BufferedImage closedFridgeImage;
   private BufferedImage sourcreamImage;
   
-  private int currX = 15; 
-  private int currY = 15;
+  private int SPEED;
+  private int currX; 
+  private int currY;
   private int velX;
   private int velY;
   private int npcX;
@@ -88,7 +89,8 @@ public class GameGUI extends JComponent implements KeyListener
   private ArrayList<BufferedImage> custImages;
   private ArrayList<Rectangle> kitchenRects;
   private ArrayList<BufferedImage> productImages;
-  public Customers c;
+  private Customers c;
+  private recipeBook book;
 
   public GameGUI() throws IOException,InterruptedException
   {
@@ -115,7 +117,6 @@ public class GameGUI extends JComponent implements KeyListener
   @Override
   public void keyPressed(KeyEvent e)
   {
-
     // Q key: quit game if all questions have been answered
     if (e.getKeyCode() == KeyEvent.VK_Q)
     {
@@ -179,30 +180,39 @@ public class GameGUI extends JComponent implements KeyListener
       }
     }
     else if(e.getKeyCode()==KeyEvent.VK_T){
-      frame.setLocation(20,40);
-      recipeBook book = new recipeBook();
+      if(book==null){
+        frame.setLocation(60,40);
+        book = new recipeBook();
+        frame.toFront();
+      }else{
+        frame.setLocationRelativeTo(null);
+        book.dispose();
+        book=null;
+        
+        
+      }
 
     }
     
     else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S )
     {
       DOWN = true;
-      velY=2;
+      velY=SPEED;
     }
     else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W)
     {
       UP = true;
-      velY=-2;
+      velY=-SPEED;
     }
     else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A)
     {
       LEFT = true;
-      velX=-2;
+      velX=-SPEED;
     }
     else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D)
     {
       RIGHT = true;
-      velX=2;
+      velX=SPEED;
     }
   } 
 
@@ -218,25 +228,25 @@ public class GameGUI extends JComponent implements KeyListener
     {
       DOWN = false;
       if(!UP)velY=0;
-      else velY=-2;
+      else velY=-SPEED;
     }
     else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W)
     {
       UP = false;
       if(!DOWN)velY=0;
-      else velY=2;
+      else velY=SPEED;
     }
     else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A)
     {
       LEFT = false;
       if(!RIGHT)velX=0;
-      else velX=2;
+      else velX=SPEED;
     }
     else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D)
     {
       RIGHT = false;
       if(!LEFT)velX=0;
-      else velX=-2;
+      else velX=-SPEED;
     }
   }
 
@@ -246,6 +256,10 @@ public class GameGUI extends JComponent implements KeyListener
 
   private void createBoard() throws IOException
   {
+    SPEED=1;
+    currX = 15;
+    currY = 15;
+
     custImages = new ArrayList<BufferedImage>();
     productImages = new ArrayList<BufferedImage>();
 
@@ -464,7 +478,7 @@ private void pickupIngredient()
           kitchenRects.add(kitchenImages.indexOf(panImage),pan);
         }
         else if(bowl.contains(playerLoc)){
-          if(!inventory.contains("batter")&&!inventory.contains("tray")){
+          if(!inventory.contains("batter")&&!inventory.contains("pan")){
             bowlObj.addIngredient(inventory);
             inventory="";
             invImage=null;
@@ -490,9 +504,7 @@ private void pickupIngredient()
   */
   private void endGame() 
   {
-
-    setVisible(false);
-    frame.dispose();
+    System.exit(ABORT);//idk if this will break anything but it works lol
   }
 
 
