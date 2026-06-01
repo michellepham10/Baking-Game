@@ -17,6 +17,8 @@ public class Minigame extends JComponent{
     private JLabel timerLabel;
     private JButton mashButton;
     private JFrame game;
+    private BufferedImage MixGameBG;
+    private BufferedImage spoon;
     private BufferedImage EggGameBG;
     private BufferedImage oneEgg;
     private BufferedImage brokenEgg;
@@ -27,9 +29,11 @@ public class Minigame extends JComponent{
         score = 0;
         totalTime=0;
         timeLeft = 0;
+        spoon = ImageIO.read(new File("spoon.png"));
         EggGameBG = ImageIO.read(new File("EggGameBG.png"));
         oneEgg = ImageIO.read(new File("oneEgg.png"));
         brokenEgg = ImageIO.read(new File("brokenEgg.png"));
+        MixGameBG= ImageIO.read(new File("MixGameBG.png"));
         stun=false;
         hit=false;
 
@@ -37,19 +41,24 @@ public class Minigame extends JComponent{
     public void mixDough(){
         gameID = MIX_DOUGH;
         timeLeft=5;
-        JFrame game = new JFrame("Mixer");
+        game = new JFrame("Mixer");
         game.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        game.setSize(250, 200);
-        game.setLayout(new FlowLayout());
+        game.setSize(332, 400);
+        game.setLayout(new BoxLayout(game.getContentPane(),BoxLayout.PAGE_AXIS));
         game.setResizable(false);
         game.setLocationRelativeTo(null);
         mashButton = new JButton("MIX!");
         scoreLabel = new JLabel("Score: 0");
         timerLabel = new JLabel("Time Remaining: 5s");
-
+        
         mashButton.setFont(new Font("Arial", Font.BOLD, 24));
-        mashButton.setPreferredSize(new Dimension(200, 80));
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        timerLabel.setFont(new Font("Arial", Font.BOLD, 24));
 
+        mashButton.setPreferredSize(new Dimension(100, 40));
+        MovingImagePanel pan = new MovingImagePanel();
+        pan.setPreferredSize(new Dimension(MixGameBG.getWidth(),MixGameBG.getHeight()));
+        JPanel pan2 = new JPanel();
         // Action when button is clicked
         mashButton.addActionListener(new ActionListener() {
             @Override
@@ -57,6 +66,8 @@ public class Minigame extends JComponent{
                 if (timeLeft > 0) {
                     score++;
                     scoreLabel.setText("Score: " + score);
+                    pan.setXVal((pan.getXVal()+50)%200);
+                    pan.repaint();
                 }
             }
         });
@@ -68,6 +79,8 @@ public class Minigame extends JComponent{
                 if (timeLeft > 0) {
                     timeLeft--;
                     timerLabel.setText("Time Remaining: " + timeLeft + "s");
+                    
+                    
                 } else {
                     gameTimer.stop();
                     mashButton.setEnabled(false);
@@ -76,11 +89,11 @@ public class Minigame extends JComponent{
                 }
             }
         });
-        game.add(panel);
-        game.add(timerLabel);
-        game.add(mashButton);
-        game.add(scoreLabel);
-
+        game.add(pan);
+        pan2.add(timerLabel);
+        pan2.add(mashButton);
+        pan2.add(scoreLabel);
+        game.add(pan2);
         gameTimer.start();
         game.setVisible(true);
     }
@@ -219,13 +232,19 @@ public class Minigame extends JComponent{
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            // Draw the image at the updated x and y coordinates
-            g.drawImage(EggGameBG,getWidth()/2-EggGameBG.getWidth()/2,0,this);
-            if (stun) {
-                g.drawImage(brokenEgg, 325, 285, this);
-            }else if(hit){
-                g.drawImage(brokenEgg, 235, 190, game);
-            }else g.drawImage(oneEgg, x+255, 20, this);
+            if(gameID==MIX_DOUGH){
+                g.drawImage(MixGameBG,getWidth()/2-MixGameBG.getWidth()/2,0,this);
+                g.drawImage(spoon,x+500,35,this);
+                System.out.print(x+"\t");
+            }
+            else if(gameID==CRACK_EGGS){
+                g.drawImage(EggGameBG,getWidth()/2-EggGameBG.getWidth()/2,0,this);
+                if (stun) {
+                    g.drawImage(brokenEgg, 325, 285, this);
+                }else if(hit){
+                    g.drawImage(brokenEgg, 235, 190, game);
+                }else g.drawImage(oneEgg, x+255, 20, this);
+            }
         }
         public void setXVal(int x){this.x=x;};
         public int getXVal(){return x;};
