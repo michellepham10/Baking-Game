@@ -4,8 +4,7 @@ import java.io.IOException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
 public class Minigame extends JComponent{
@@ -116,7 +115,6 @@ public class Minigame extends JComponent{
         p2.add(timerLabel);
         p3.add(mashButton);
         p2.add(scoreLabel);
-        //game.add(this);
         game.add(p);
         game.add(p2);
         game.add(p3);
@@ -174,6 +172,44 @@ public class Minigame extends JComponent{
         
         
     }
+    public void cakeDecor(){
+        timerLabel = new JLabel("Time Remaining: 5s");
+        timeLeft=3;
+        timerLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        
+        game = new JFrame("Cake Decorating Game");
+        game.setLayout(new BoxLayout(game.getContentPane(),BoxLayout.PAGE_AXIS));
+        game.setSize(640, 720);
+        game.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mini min = new mini();   // Call the other class
+        min.setPreferredSize(new Dimension(640,640));
+        gameTimer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (timeLeft > 0) {
+                    timerLabel.setText("Time Remaining: "+timeLeft+"s");
+                    timeLeft--;
+                    
+                } else {
+                    gameTimer.stop();
+                    score = min.numTransparent()/8000;
+                    JOptionPane.showMessageDialog(game, "Game Over! Final Score: " + score);
+                    game.dispose();
+                }
+                repaint();
+            }
+        });
+        
+        JPanel panel2 = new JPanel();
+        panel2.setPreferredSize(new Dimension(640,50));
+        panel2.add(timerLabel);
+        game.add(min);
+        game.add(panel2);
+        
+        gameTimer.setInitialDelay(0);
+        gameTimer.start();
+        game.setVisible(true);
+    }
     public int getScore(){return score;}
 
     public class MovingImagePanel extends JPanel{
@@ -194,5 +230,48 @@ public class Minigame extends JComponent{
         public void setXVal(int x){this.x=x;};
         public int getXVal(){return x;};
     }
-}
+    public class mini extends JPanel {
 
+    private BufferedImage cakeImage;
+    private BufferedImage frostingLayer;
+    private Graphics2D frostingGraphics;
+
+    public mini() {
+        try {
+            cakeImage = ImageIO.read(new File("blank_cake3.png")); // your cake image
+        } catch (Exception e) {
+            System.out.println("Could not load cake image");
+        }
+
+        // Create a transparent layer to draw frosting on
+        frostingLayer = new BufferedImage(640, 640, BufferedImage.TYPE_INT_ARGB);
+        frostingGraphics = frostingLayer.createGraphics();
+        frostingGraphics.setStroke(new BasicStroke(5)); // frosting thickness
+        frostingGraphics.setColor(Color.PINK);           // frosting color
+
+        addMouseMotionListener(new MouseMotionAdapter() {
+            public void mouseDragged(MouseEvent e) {
+                frostingGraphics.fillOval(e.getX()-25, e.getY()-25, 50, 50);
+                repaint();
+            }
+        });
+    }
+    public int numTransparent(){
+        int count = 0;
+        for(int row = 0;row<640;row++){
+            for(int col=0;col<640;col++){
+                if((frostingLayer.getRGB(row,col)>>24) != 0x00 )count++;
+            }
+        }
+        return count;
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        g.drawImage(cakeImage, 0, 0, null);       // draw cake
+        g.drawImage(frostingLayer, 0, 0, null);   // draw frosting on top
+    }
+}
+}
