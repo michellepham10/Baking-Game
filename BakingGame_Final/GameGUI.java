@@ -86,6 +86,7 @@ public class GameGUI extends JComponent implements KeyListener
   private Customers c;
   private RecipeBook book;
   private Minigame minigame;
+  private mini cool;
 
   public GameGUI() throws IOException,InterruptedException
   {
@@ -231,6 +232,19 @@ public class GameGUI extends JComponent implements KeyListener
   @Override
   public void keyPressed(KeyEvent e)
   {
+    if (e.getKeyCode() == KeyEvent.VK_M)
+    {
+      /* your code here */ 
+        JFrame aframe = new JFrame("Cake Decorating Game");
+        aframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        mini panel = new mini();   // Call the other class
+        aframe.add(panel);
+
+        aframe.setSize(640, 680);
+        aframe.setVisible(true);
+    }
+    
     // Q key: quit game if all questions have been answered
     if (e.getKeyCode() == KeyEvent.VK_Q){
       /* your code here */ 
