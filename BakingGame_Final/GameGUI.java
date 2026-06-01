@@ -4,25 +4,16 @@
 * V1.0
 * Copyright(c) 2024 PLTW to present. All rights reserved
 */
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.imageio.ImageIO;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
-
+import javax.swing.*;
 public class GameGUI extends JComponent implements KeyListener
 {
   // constants for gameboard confg
@@ -31,6 +22,7 @@ public class GameGUI extends JComponent implements KeyListener
   
   // frame and images for gameboard
   private JFrame frame;
+  private Dimension screenSize;
   private BufferedImage kitchenBG;
   private BufferedImage bowlImage;
   private BufferedImage cashier;
@@ -52,6 +44,7 @@ public class GameGUI extends JComponent implements KeyListener
   private BufferedImage doughImage;
   private BufferedImage closedFridgeImage;
   private BufferedImage sourcreamImage;
+  private BufferedImage trashImage;
   
   private int SPEED;
   private int currX; 
@@ -82,6 +75,7 @@ public class GameGUI extends JComponent implements KeyListener
   private Rectangle openOven;
   private Rectangle openFridge;
   private Rectangle sourcream;
+  private Rectangle trash;
   private Bowl bowlObj;
   private String inventory;
   private BufferedImage invImage;
@@ -90,11 +84,11 @@ public class GameGUI extends JComponent implements KeyListener
   private ArrayList<Rectangle> kitchenRects;
   private ArrayList<BufferedImage> productImages;
   private Customers c;
-  private recipeBook book;
+  private RecipeBook book;
+  private Minigame minigame;
 
   public GameGUI() throws IOException,InterruptedException
   {
-    inventory = "";
     createBoard();
     tick();
   }
@@ -107,155 +101,10 @@ public class GameGUI extends JComponent implements KeyListener
     }
   }
 
-  
-  /**
-   * Manage the input from the keybard: arrow keys, wasd keys, p, q, and h keys.
-   * Key input is not case sensivite.
-   * 
-   * @param the key that was pressed
-   */
-  @Override
-  public void keyPressed(KeyEvent e)
-  {
-    // Q key: quit game if all questions have been answered
-    if (e.getKeyCode() == KeyEvent.VK_Q)
-    {
-      /* your code here */ 
-      endGame();
-    }
-    if(e.getKeyCode()==KeyEvent.VK_L){
-      setIngredients();
-      
-    }
-    // H key: help
-    if (e.getKeyCode() == KeyEvent.VK_H)
-    {
-      String msg = "Move player: arrows or WASD keys\n" + 
-      "Pickup/place ingredient: e\n" +
-      "Mix things in the bowl: f\n"+
-      "Receive an order on the screen to the right: c\n"+
-      "Clear inventory: l\n"+
-      "Quit: q\n" +
-      "Help: h\n";
-      showMessage(msg);
-    }
-
-    if (e.getKeyCode() == KeyEvent.VK_C)
-    {
-      
-      if (c.getOrder() == "" && !kitchenScreen)
-      {
-        c.generateOrder();
-        String order = c.getOrder();
-        showMessage(order);
-      }
-  
-
-      else if (c.getOrder() != "")
-      {
-        showMessage(c.getOrder());
-      }
-
-      else if (c.getOrder() == "" && kitchenScreen)
-      {
-        showMessage("You do not have an order yet!");
-      }
-      repaint();
-    }
-    
-    // Arrow and WASD keys: moved down, up, left or right
-    if (e.getKeyCode() == KeyEvent.VK_E)
-    {
-      pickupIngredient();
-    }
-    else if(e.getKeyCode()==KeyEvent.VK_F){
-      if(bowl.contains(playerLoc)&&bowlObj.getIngredients().size()!=0){
-        bowlObj.mix();
-        if(bowlObj.getIngredients().get(0).contains("batter")){
-          inventory=bowlObj.getIngredients().get(0);
-          invImage = doughImage;
-          bowlObj.clearBowl();
-        }
-        
-      }
-    }
-    else if(e.getKeyCode()==KeyEvent.VK_T){
-      if(book==null){
-        frame.setLocation(60,40);
-        book = new recipeBook();
-        frame.toFront();
-      }else{
-        frame.setLocationRelativeTo(null);
-        book.dispose();
-        book=null;
-        
-        
-      }
-
-    }
-    
-    else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S )
-    {
-      DOWN = true;
-      velY=SPEED;
-    }
-    else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W)
-    {
-      UP = true;
-      velY=-SPEED;
-    }
-    else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A)
-    {
-      LEFT = true;
-      velX=-SPEED;
-    }
-    else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D)
-    {
-      RIGHT = true;
-      velX=SPEED;
-    }
-  } 
-
-  /**
-   * Manage the key release, checking if the player is at a prize.
-   * 
-   * @param the key that was pressed
-   */
-  @Override
-  public void keyReleased(KeyEvent e) 
-  { 
-    if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S )
-    {
-      DOWN = false;
-      if(!UP)velY=0;
-      else velY=-SPEED;
-    }
-    else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W)
-    {
-      UP = false;
-      if(!DOWN)velY=0;
-      else velY=SPEED;
-    }
-    else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A)
-    {
-      LEFT = false;
-      if(!RIGHT)velX=0;
-      else velX=SPEED;
-    }
-    else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D)
-    {
-      RIGHT = false;
-      if(!LEFT)velX=0;
-      else velX=-SPEED;
-    }
-  }
-
-  /* override necessary but no action */
-  @Override
-  public void keyTyped(KeyEvent e) { }
-
   private void createBoard() throws IOException
   {
+    inventory = "";
+    
     SPEED=1;
     currX = 15;
     currY = 15;
@@ -266,6 +115,7 @@ public class GameGUI extends JComponent implements KeyListener
     openOvenImage = ImageIO.read(new File("openOven.png"));
     openFridgeImage =ImageIO.read(new File("openFridge.png"));
     closedFridgeImage=ImageIO.read(new File("closedFridge.png"));
+    trashImage=ImageIO.read(new File("trash.png"));
     inv1= ImageIO.read(new File("1inventory.png"));
     custImages.add(greenFairyImage = ImageIO.read(new File("greenfairy.png")));
     custImages.add(redFairyImage = ImageIO.read(new File("redfairy.png")));
@@ -276,7 +126,7 @@ public class GameGUI extends JComponent implements KeyListener
     productImages.add(ImageIO.read(new File("vanillacake.png")));
     productImages.add(ImageIO.read(new File("straberrycake.png")));
     productImages.add(ImageIO.read(new File("chocolatecake.png")));
-    productImages.add(ImageIO.read(new File("chocolatecupcake.png")));
+    productImages.add(ImageIO.read(new File("cupcake.png")));
     productImages.add(ImageIO.read(new File("cookie.png")));
 
     flourImage = ImageIO.read(new File("flour.png"));
@@ -298,10 +148,11 @@ public class GameGUI extends JComponent implements KeyListener
     milk = new Rectangle(898,398,(int)milkImage.getWidth(),(int)milkImage.getHeight());
     sugar = new Rectangle(983,413,(int)sugarImage.getWidth(),(int)sugarImage.getHeight());
     chocolate = new Rectangle(895,505,(int)chocolateImage.getWidth(),(int)chocolateImage.getHeight());
-    pan = new Rectangle(595,495,(int)filledPanImage.getWidth(),(int)filledPanImage.getHeight());
+    pan = new Rectangle(595,515,(int)filledPanImage.getWidth(),(int)filledPanImage.getHeight());
     sourcream = new Rectangle(983,510,(int)sourcreamImage.getWidth(),(int)sourcreamImage.getHeight());
     openOven = new Rectangle(570,620,250,250);
-    openFridge = new Rectangle(820,50,(int)closedFridgeImage.getWidth(),(int)closedFridgeImage.getHeight()-100); 
+    openFridge = new Rectangle(820,50,(int)closedFridgeImage.getWidth(),(int)closedFridgeImage.getHeight()-100);
+    trash=new Rectangle(3,810,(int)trashImage.getWidth()-50,(int)trashImage.getHeight()-30);
 
     
     npcX = WIDTH+20;
@@ -312,6 +163,7 @@ public class GameGUI extends JComponent implements KeyListener
     isRedFairy = false;
     bowlObj = new Bowl();
     c = new Customers();
+    minigame = new Minigame();
     
     kitchenBG = ImageIO.read(new File("kitchen.png"));
     cashier = ImageIO.read(new File("cashier.png"));
@@ -329,6 +181,8 @@ public class GameGUI extends JComponent implements KeyListener
     frame.add(this);
     frame.setLocationRelativeTo(null);
     
+    screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
     frame.setVisible(true);
     frame.setResizable(false); 
     frame.addKeyListener(this);
@@ -367,6 +221,134 @@ public class GameGUI extends JComponent implements KeyListener
     kitchenRects.add(openOven);
     kitchenRects.add(openFridge);     
   }
+
+  /**
+   * Manage the input from the keybard: arrow keys, wasd keys, p, q, and h keys.
+   * Key input is not case sensivite.
+   * 
+   * @param the key that was pressed
+   */
+  @Override
+  public void keyPressed(KeyEvent e)
+  {
+    // Q key: quit game if all questions have been answered
+    if (e.getKeyCode() == KeyEvent.VK_Q){
+      /* your code here */ 
+      endGame();
+    }
+    // H key: help
+    if (e.getKeyCode() == KeyEvent.VK_H){
+      String msg = "Move player: arrows or WASD keys\n" + 
+      "Pickup/place ingredient: e\n" +
+      "Mix things in the bowl: f\n"+
+      "Receive an order on the screen to the right: c\n"+
+      "Clear inventory: l\n"+
+      "Quit: q\n" +
+      "Help: h\n";
+      showMessage(msg);
+    }
+
+    if (e.getKeyCode() == KeyEvent.VK_C){
+      
+      if (c.getOrder() == "" && !kitchenScreen)
+      {
+        c.generateOrder();
+        String order = c.getOrder();
+        showMessage(order);
+      }
+  
+
+      else if (c.getOrder() != "")
+      {
+        showMessage(c.getOrder());
+      }
+
+      else if (c.getOrder() == "" && kitchenScreen)
+      {
+        showMessage("You do not have an order yet!");
+      }
+    }
+    
+    // Arrow and WASD keys: moved down, up, left or right
+    if (e.getKeyCode() == KeyEvent.VK_E)pickupIngredient();
+    else if(e.getKeyCode()==KeyEvent.VK_F){
+      if(bowl.contains(playerLoc)&&bowlObj.getIngredients().size()!=0){
+        bowlObj.mix();
+        if(bowlObj.getIngredients().get(0).contains("batter")){
+          inventory=bowlObj.getIngredients().get(0);
+          invImage = doughImage;
+          bowlObj.clearBowl();
+        }
+        
+      }
+    }
+    if(e.getKeyCode()==KeyEvent.VK_R){
+      if(book==null){
+        frame.setLocation((int)(screenSize.width*0.015),(int)(screenSize.height/2-540));
+        book = new RecipeBook();
+        frame.toFront();
+      }else{
+        frame.setLocationRelativeTo(null);
+        book.dispose();
+        book=null;
+        
+        
+      }
+
+    }
+    if(e.getKeyCode()==KeyEvent.VK_T){
+      minigame.crackEggs();
+    }
+    else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S ){
+      DOWN = true;
+      velY=SPEED;
+    }
+    else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W){
+      UP = true;
+      velY=-SPEED;
+    }
+    else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A){
+      LEFT = true;
+      velX=-SPEED;
+    }
+    else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D){
+      RIGHT = true;
+      velX=SPEED;
+    }
+  } 
+
+  /**
+   * Manage the key release, checking if the player is at a prize.
+   * 
+   * @param the key that was pressed
+   */
+  @Override
+  public void keyReleased(KeyEvent e) 
+  { 
+    if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S ){
+      DOWN = false;
+      if(!UP)velY=0;
+      else velY=-SPEED;
+    }else if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W){
+      UP = false;
+      if(!DOWN)velY=0;
+      else velY=SPEED;
+    }else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A){
+      LEFT = false;
+      if(!RIGHT)velX=0;
+      else velX=SPEED;
+    }else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D){
+      RIGHT = false;
+      if(!LEFT)velX=0;
+      else velX=-SPEED;
+    }
+  }
+
+  /* override necessary but no action */
+  @Override
+  public void keyTyped(KeyEvent e) { }
+
+  
   /**
    * Increment/decrement the player location by the amount designated.
    * 
@@ -401,8 +383,7 @@ public class GameGUI extends JComponent implements KeyListener
     JOptionPane.showMessageDialog(frame,str );
   }
 
-private void pickupIngredient()
-  {
+  private void pickupIngredient(){
     if(kitchenScreen){
       if(inventory.equals("")){
         if (flour.contains(playerLoc)&&kitchenRects.contains(flour)){
@@ -469,6 +450,7 @@ private void pickupIngredient()
           inventory="";
           invImage=null;
           kitchenImages.set(kitchenImages.indexOf(panImage),filledPanImage);
+          pan.setBounds((int)pan.getX(), (int)pan.getY()-21, pan.width, pan.height);;
         }
         else if(openOven.contains(playerLoc)&&inventory.contains("pan")){
           invImage=productImages.get(bowlObj.findRecipeIdx(panFiller));
@@ -476,6 +458,7 @@ private void pickupIngredient()
           panFiller="";
           kitchenImages.add(panImage);
           kitchenRects.add(kitchenImages.indexOf(panImage),pan);
+          pan.setBounds((int)pan.getX(), (int)pan.getY()+21, pan.width, pan.height);;
         }
         else if(bowl.contains(playerLoc)){
           if(!inventory.contains("batter")&&!inventory.contains("pan")){
@@ -484,6 +467,9 @@ private void pickupIngredient()
             invImage=null;
           }
           
+        }
+        else if(trash.contains(playerLoc)){//clearsinventory
+          setIngredients();
         }
       }
     }
@@ -518,6 +504,7 @@ private void pickupIngredient()
     Graphics2D g2 = (Graphics2D)g;
     if(kitchenScreen){
       g.drawImage(kitchenBG, 0, 0, null);
+      g.drawImage(trashImage,(int)trash.getX(),(int)trash.getY(),null);
       g.drawImage(inv1, 1220, 0, null);
       if(openOven.contains(playerLoc))g.drawImage(openOvenImage, 0, 0, null);
       if(openFridge.contains(playerLoc)){
