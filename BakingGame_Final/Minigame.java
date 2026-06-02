@@ -99,6 +99,7 @@ public class Minigame extends JComponent{
         game.setVisible(true);
     }
     public void crackEggs(){
+        score=0;//crutch omg
         gameID = CRACK_EGGS;
         count=3;
         totalTime=24;
@@ -186,16 +187,17 @@ public class Minigame extends JComponent{
         
         
     }
-    public void cakeDecor(){
+    public void cakeDecor(Color c){
         timerLabel = new JLabel("Time Remaining: 5s");
         timeLeft=3;
         timerLabel.setFont(new Font("Arial", Font.BOLD, 24));
         
         game = new JFrame("Cake Decorating Game");
+        game.setLocation(600,200);
         game.setLayout(new BoxLayout(game.getContentPane(),BoxLayout.PAGE_AXIS));
         game.setSize(640, 720);
         game.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mini min = new mini();   // Call the other class
+        mini min = new mini(c);   // Call the other class
         min.setPreferredSize(new Dimension(640,640));
         gameTimer = new Timer(1000, new ActionListener() {
             @Override
@@ -206,7 +208,7 @@ public class Minigame extends JComponent{
                     
                 } else {
                     gameTimer.stop();
-                    score = min.numTransparent()/8000;
+                    score += min.numTransparent()/8000;
                     JOptionPane.showMessageDialog(game, "Game Over! Final Score: " + score);
                     game.dispose();
                 }
@@ -255,7 +257,7 @@ public class Minigame extends JComponent{
     private BufferedImage frostingLayer;
     private Graphics2D frostingGraphics;
 
-    public mini() {
+    public mini(Color c) {
         try {
             cakeImage = ImageIO.read(new File("blank_cake3.png")); // your cake image
         } catch (Exception e) {
@@ -265,8 +267,8 @@ public class Minigame extends JComponent{
         // Create a transparent layer to draw frosting on
         frostingLayer = new BufferedImage(640, 640, BufferedImage.TYPE_INT_ARGB);
         frostingGraphics = frostingLayer.createGraphics();
-        frostingGraphics.setStroke(new BasicStroke(5)); // frosting thickness
-        frostingGraphics.setColor(Color.PINK);           // frosting color
+        frostingGraphics.setStroke(new BasicStroke(7)); // frosting thickness
+        frostingGraphics.setColor(c);           // frosting color
 
         addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent e) {
