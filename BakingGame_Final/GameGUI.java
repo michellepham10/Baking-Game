@@ -5,13 +5,13 @@
 * Copyright(c) 2024 PLTW to present. All rights reserved
 */
 import java.awt.*;
+import java.awt.RenderingHints.Key;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 public class GameGUI extends JComponent implements KeyListener
@@ -45,6 +45,8 @@ public class GameGUI extends JComponent implements KeyListener
   private BufferedImage closedFridgeImage;
   private BufferedImage sourcreamImage;
   private BufferedImage trashImage;
+  private BufferedImage baseCake;
+  private BufferedImage pipingBagImage;
   
   private int SPEED;
   private int currX; 
@@ -76,6 +78,7 @@ public class GameGUI extends JComponent implements KeyListener
   private Rectangle openFridge;
   private Rectangle sourcream;
   private Rectangle trash;
+  private Rectangle pipingBag;
   private Bowl bowlObj;
   private String inventory;
   private BufferedImage invImage;
@@ -139,9 +142,11 @@ public class GameGUI extends JComponent implements KeyListener
     chocolateImage = ImageIO.read(new File("chocolate.png"));
     panImage = ImageIO.read(new File("pan.png"));
     sourcreamImage = ImageIO.read(new File("sourcream.png"));
+    pipingBagImage = ImageIO.read(new File("pipingBag.png"));
+    baseCake = ImageIO.read(new File("baseCake.png"));
     
-    flour = new Rectangle(40,433, (int)flourImage.getWidth(), (int)flourImage.getHeight());
-    bowl = new Rectangle(293,493,(int)bowlImage.getWidth(),(int)bowlImage.getHeight());
+    flour = new Rectangle(10,433, (int)flourImage.getWidth(), (int)flourImage.getHeight());
+    bowl = new Rectangle(373,493,(int)bowlImage.getWidth(),(int)bowlImage.getHeight());
     strawberries = new Rectangle(901,271,(int)strawberriesImage.getWidth(),(int)strawberriesImage.getHeight());
     butter = new Rectangle(975,327,(int)butterImage.getWidth(),(int)butterImage.getHeight());
     eggs = new Rectangle(915,180,(int)eggsImage.getWidth(),(int)eggsImage.getHeight());
@@ -153,7 +158,7 @@ public class GameGUI extends JComponent implements KeyListener
     openOven = new Rectangle(570,620,250,250);
     openFridge = new Rectangle(820,50,(int)closedFridgeImage.getWidth(),(int)closedFridgeImage.getHeight()-100);
     trash=new Rectangle(3,810,(int)trashImage.getWidth()-50,(int)trashImage.getHeight()-30);
-
+    pipingBag = new Rectangle(170,505,(int)pipingBagImage.getWidth()-50,(int)pipingBagImage.getHeight()-30);
     
     npcX = WIDTH+20;
     npcY=0;
@@ -164,6 +169,7 @@ public class GameGUI extends JComponent implements KeyListener
     bowlObj = new Bowl();
     c = new Customers();
     minigame = new Minigame();
+    book = new RecipeBook();
     
     kitchenBG = ImageIO.read(new File("kitchen.png"));
     cashier = ImageIO.read(new File("cashier.png"));
@@ -199,6 +205,7 @@ public class GameGUI extends JComponent implements KeyListener
 
     kitchenImages.add(flourImage);
     kitchenImages.add(bowlImage);
+    kitchenImages.add(pipingBagImage);
     kitchenImages.add(strawberriesImage);
     kitchenImages.add(butterImage);
     kitchenImages.add(eggsImage);
@@ -210,6 +217,7 @@ public class GameGUI extends JComponent implements KeyListener
     
     kitchenRects.add(flour);
     kitchenRects.add(bowl);
+    kitchenRects.add(pipingBag);
     kitchenRects.add(strawberries);
     kitchenRects.add(butter);
     kitchenRects.add(eggs);
@@ -232,6 +240,9 @@ public class GameGUI extends JComponent implements KeyListener
   public void keyPressed(KeyEvent e)
   {
     
+    if (e.getKeyCode()==KeyEvent.VK_SHIFT){
+      SPEED=2;
+    }
     // Q key: quit game if all questions have been answered
     if (e.getKeyCode() == KeyEvent.VK_Q){
       /* your code here */ 
@@ -248,7 +259,7 @@ public class GameGUI extends JComponent implements KeyListener
       "Help: h\n";
       showMessage(msg);
     }
-
+    
     if (e.getKeyCode() == KeyEvent.VK_C){
       
       if (c.getOrder() == "" && !kitchenScreen)
@@ -276,6 +287,7 @@ public class GameGUI extends JComponent implements KeyListener
       if(bowl.contains(playerLoc)&&bowlObj.getIngredients().size()!=0){
         bowlObj.mix();
         if(bowlObj.getIngredients().get(0).contains("batter")){
+          minigame.mixDough();
           inventory=bowlObj.getIngredients().get(0);
           invImage = doughImage;
           bowlObj.clearBowl();
@@ -284,22 +296,18 @@ public class GameGUI extends JComponent implements KeyListener
       }
     }
     if(e.getKeyCode()==KeyEvent.VK_R){
-      if(book==null){
+      if(!book.isVisible()){
         frame.setLocation((int)(screenSize.width*0.015),(int)(screenSize.height/2-540));
-        book = new RecipeBook();
+        book.setVisible(true);
         frame.toFront();
       }else{
         frame.setLocationRelativeTo(null);
-        book.dispose();
-        book=null;
-        
+        book.setVisible(false);
         
       }
 
     }
-    if(e.getKeyCode()==KeyEvent.VK_T){
-      minigame.mixDough();
-    }
+
     else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S ){
       DOWN = true;
       velY=SPEED;
@@ -326,6 +334,7 @@ public class GameGUI extends JComponent implements KeyListener
   @Override
   public void keyReleased(KeyEvent e) 
   { 
+    if (e.getKeyCode() == KeyEvent.VK_SHIFT)SPEED=1;
     if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S ){
       DOWN = false;
       if(!UP)velY=0;
@@ -454,8 +463,14 @@ public class GameGUI extends JComponent implements KeyListener
           pan.setBounds((int)pan.getX(), (int)pan.getY()-21, pan.width, pan.height);;
         }
         else if(openOven.contains(playerLoc)&&inventory.contains("pan")){
-          invImage=productImages.get(bowlObj.findRecipeIdx(panFiller));
-          inventory=panFiller.substring(0,panFiller.indexOf(" batter"));
+          inventory="";
+          if(panFiller.contains("cake")&&!panFiller.contains("cupcake")){
+            invImage=baseCake;
+            inventory="base ";
+          }
+          else invImage=productImages.get(bowlObj.findRecipeIdx(panFiller));
+          
+          inventory+=panFiller.substring(0,panFiller.indexOf(" batter"));
           panFiller="";
           kitchenImages.add(panImage);
           kitchenRects.add(kitchenImages.indexOf(panImage),pan);
@@ -463,11 +478,31 @@ public class GameGUI extends JComponent implements KeyListener
         }
         else if(bowl.contains(playerLoc)){
           if(!inventory.contains("batter")&&!inventory.contains("pan")){
+            if(inventory.equals("eggs"))minigame.crackEggs();
             bowlObj.addIngredient(inventory);
             inventory="";
             invImage=null;
+          } 
+        }
+        else if(pipingBag.contains(playerLoc)&&inventory.contains("cake")&&!inventory.contains("batter")&&c.getOrder().contains("frosting")){
+          inventory=inventory.substring(5);
+          if(c.getOrder().contains("chocolate frosting")){
+            minigame.cakeDecor(new Color(82, 32, 18));
+            inventory+=" with chocolate frosting";
+            invImage=productImages.get(2);
+          }
+          else if(c.getOrder().contains("strawberry frosting")){
+            minigame.cakeDecor(Color.pink);
+            inventory+=" with strawberry frosting";
+            invImage=productImages.get(1);
+          }
+          else{
+            minigame.cakeDecor(new Color(252, 243, 225));
+            inventory+=" with vanilla frosting";
+            invImage=productImages.get(0);
           }
           
+          System.out.println(inventory);
         }
         else if(trash.contains(playerLoc)){//clearsinventory
           setIngredients();
@@ -475,14 +510,15 @@ public class GameGUI extends JComponent implements KeyListener
       }
     }
     else{
-      System.out.println(inventory+","+c.getProduct());
-      if(inventory.equals(c.getProduct())){
-      invImage=null;
-      inventory="";
-      showMessage(c.generateReply());
-      c.nullifyOrder();
-      custAtPos = false;
-    }}
+      if(!inventory.equals("")&&inventory.equals(c.getProduct())){
+        invImage=null;
+        inventory="";
+        showMessage(c.generateReply(minigame.getScore()));
+        c.nullifyOrder();
+        custAtPos = false;
+        setIngredients();
+      }
+    }
     
   }
 
