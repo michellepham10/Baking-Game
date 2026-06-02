@@ -58,6 +58,7 @@ public class Minigame extends JComponent{
         mashButton.setPreferredSize(new Dimension(100, 40));
         MovingImagePanel pan = new MovingImagePanel();
         pan.setPreferredSize(new Dimension(MixGameBG.getWidth(),MixGameBG.getHeight()));
+        pan.setXVal(75);
         JPanel pan2 = new JPanel();
         // Action when button is clicked
         mashButton.addActionListener(new ActionListener() {
@@ -66,7 +67,7 @@ public class Minigame extends JComponent{
                 if (timeLeft > 0) {
                     score++;
                     scoreLabel.setText("Score: " + score);
-                    pan.setXVal((pan.getXVal()+50)%200);
+                    pan.setXVal((int)((Math.sin(score*Math.PI/6))*70)+75);
                     pan.repaint();
                 }
             }
@@ -234,8 +235,7 @@ public class Minigame extends JComponent{
             super.paintComponent(g);
             if(gameID==MIX_DOUGH){
                 g.drawImage(MixGameBG,getWidth()/2-MixGameBG.getWidth()/2,0,this);
-                g.drawImage(spoon,x+500,35,this);
-                System.out.print(x+"\t");
+                g.drawImage(spoon,x+70,33,this);
             }
             else if(gameID==CRACK_EGGS){
                 g.drawImage(EggGameBG,getWidth()/2-EggGameBG.getWidth()/2,0,this);
