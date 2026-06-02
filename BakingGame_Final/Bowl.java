@@ -11,8 +11,6 @@ public class Bowl{
               {"chocolate cake batter","butter","chocolate","eggs","flour","milk","sugar"},
               {"chocolate cupcake batter","butter","chocolate","eggs","flour","milk","sourcream","sugar"},
               {"cookie batter","butter","chocolate","eggs","flour","sugar"}};
-              //{"vanilla icing","butter","milk","sugar"},
-              //{"chocolate icing","butter","chocolate","milk","sugar"},
               
     ingredients = new ArrayList<String>();
   }
