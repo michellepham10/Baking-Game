@@ -1,7 +1,7 @@
 
 import java.io.IOException;
 
-public class EscapeRoom
+public class GameRunner
 {
   public static void main(String[] args) throws IOException,InterruptedException
   {         
